@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
 const TABS = [
@@ -17,13 +17,13 @@ const CHATS = [
   { id: 6, name: "Стартап-хаб", avatar: "🚀", color: "#6366f1", last: "Антон: встреча завтра в 10:00", time: "вчера", unread: 0, online: false, encrypted: false, type: "group" },
 ];
 
-const MESSAGES = [
-  { id: 1, from: "them", text: "Привет! Посмотрел твоё голосовое 🎧", time: "14:20", type: "text" },
-  { id: 2, from: "me", text: "Да, всё верно! Отправляю файлы сейчас", time: "14:21", type: "text" },
-  { id: 3, from: "them", text: "", time: "14:22", type: "voice", duration: "0:42" },
-  { id: 4, from: "me", text: "Понял, принял 👌 Шифрование включено", time: "14:23", type: "text" },
-  { id: 5, from: "them", text: "", time: "14:24", type: "video", duration: "0:58" },
-  { id: 6, from: "me", text: "Отличное видео! Созвонимся вечером?", time: "14:25", type: "text" },
+const INIT_MESSAGES = [
+  { id: 1, from: "them", text: "Привет! Посмотрел твоё голосовое 🎧", time: "14:20", type: "text" as const },
+  { id: 2, from: "me", text: "Да, всё верно! Отправляю файлы сейчас", time: "14:21", type: "text" as const },
+  { id: 3, from: "them", text: "", time: "14:22", type: "voice" as const, duration: "0:42" },
+  { id: 4, from: "me", text: "Понял, принял 👌 Шифрование включено", time: "14:23", type: "text" as const },
+  { id: 5, from: "them", text: "", time: "14:24", type: "video" as const, duration: "0:58" },
+  { id: 6, from: "me", text: "Отличное видео! Созвонимся вечером?", time: "14:25", type: "text" as const },
 ];
 
 const CALLS = [
@@ -44,14 +44,77 @@ const CHANNELS = [
 
 const waveBars = Array.from({ length: 24 }, (_, i) => 8 + Math.abs(Math.sin(i * 0.8)) * 14);
 
+function getNow() {
+  return new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+}
+
+type Message = {
+  id: number;
+  from: string;
+  text: string;
+  time: string;
+  type: "text" | "voice" | "video";
+  duration?: string;
+};
+
 export default function Index() {
+  const [isDark, setIsDark] = useState(true);
   const [activeTab, setActiveTab] = useState("chats");
   const [activeChat, setActiveChat] = useState<number | null>(1);
   const [message, setMessage] = useState("");
   const [videoCall, setVideoCall] = useState(false);
   const [recording, setRecording] = useState(false);
+  const [recordSeconds, setRecordSeconds] = useState(0);
+  const [messages, setMessages] = useState<Message[]>(INIT_MESSAGES);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recordTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const selectedChat = CHATS.find((c) => c.id === activeChat);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  }, [isDark]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const sendMessage = () => {
+    if (!message.trim()) return;
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), from: "me", text: message.trim(), time: getNow(), type: "text" },
+    ]);
+    setMessage("");
+  };
+
+  const startRecording = () => {
+    setRecording(true);
+    setRecordSeconds(0);
+    recordTimer.current = setInterval(() => {
+      setRecordSeconds((s) => s + 1);
+    }, 1000);
+  };
+
+  const stopRecording = () => {
+    if (recordTimer.current) clearInterval(recordTimer.current);
+    const dur = recordSeconds;
+    setRecording(false);
+    setRecordSeconds(0);
+    const mins = Math.floor(dur / 60);
+    const secs = dur % 60;
+    const durationStr = `${mins}:${secs.toString().padStart(2, "0")}`;
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), from: "me", text: "", time: getNow(), type: "voice", duration: durationStr },
+    ]);
+  };
+
+  const formatRecTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div className="messenger-root">
@@ -87,7 +150,17 @@ export default function Index() {
             <div className="logo-icon">⚡</div>
             <span className="logo-text">NOVA</span>
           </div>
-          <button className="icon-btn"><Icon name="Edit" size={18} /></button>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {/* Theme toggle */}
+            <button className="theme-toggle" onClick={() => setIsDark(!isDark)} title={isDark ? "Светлая тема" : "Тёмная тема"}>
+              <span className="theme-toggle-track">
+                <span className="theme-toggle-thumb">
+                  {isDark ? "🌙" : "☀️"}
+                </span>
+              </span>
+            </button>
+            <button className="icon-btn"><Icon name="Edit" size={18} /></button>
+          </div>
         </div>
 
         <div className="search-wrap">
@@ -155,7 +228,7 @@ export default function Index() {
                     </button>
                   </div>
                   <div className="chat-bottom">
-                    <span style={{ fontSize: "11px", color: call.dir === "missed" ? "#f87171" : "#94a3b8" }}>
+                    <span style={{ fontSize: "11px", color: call.dir === "missed" ? "#f87171" : "var(--nova-muted)" }}>
                       <Icon name={call.dir === "in" ? "PhoneIncoming" : call.dir === "missed" ? "PhoneMissed" : "PhoneOutgoing"} size={11} className="inline mr-1" />
                       {call.dir === "missed" ? "Пропущен" : call.dir === "in" ? "Входящий" : "Исходящий"}
                       {call.duration && ` • ${call.duration}`}
@@ -205,11 +278,23 @@ export default function Index() {
                 </p>
               </div>
             </div>
+            {/* Theme switcher in settings */}
+            <div className="settings-item" onClick={() => setIsDark(!isDark)} style={{ cursor: "pointer" }}>
+              <div className="settings-icon-wrap">
+                <Icon name={isDark ? "Moon" : "Sun"} size={18} />
+              </div>
+              <div className="flex-1">
+                <p className="settings-item-label">Тема оформления</p>
+                <p className="settings-item-sub">{isDark ? "Тёмная тема" : "Светлая тема"}</p>
+              </div>
+              <div className="theme-toggle-mini">
+                <span className="theme-toggle-mini-thumb">{isDark ? "🌙" : "☀️"}</span>
+              </div>
+            </div>
             {[
               { icon: "Bell", label: "Уведомления", sub: "Все включены" },
               { icon: "Shield", label: "Приватность", sub: "Максимальная защита" },
               { icon: "Lock", label: "Шифрование", sub: "End-to-end активно" },
-              { icon: "Palette", label: "Оформление", sub: "Тёмная тема" },
               { icon: "Smartphone", label: "Устройства", sub: "3 активных" },
               { icon: "HardDrive", label: "Хранилище", sub: "12.4 ГБ из 50 ГБ" },
             ].map((s) => (
@@ -253,9 +338,7 @@ export default function Index() {
                 <button className="icon-btn" onClick={() => setVideoCall(true)} title="Видеозвонок">
                   <Icon name="Video" size={20} />
                 </button>
-                <button className="icon-btn" title="Голосовой звонок">
-                  <Icon name="Phone" size={20} />
-                </button>
+                <button className="icon-btn"><Icon name="Phone" size={20} /></button>
                 <button className="icon-btn"><Icon name="Search" size={20} /></button>
                 <button className="icon-btn"><Icon name="MoreVertical" size={20} /></button>
               </div>
@@ -267,7 +350,7 @@ export default function Index() {
                 Сквозное шифрование активно — никто кроме вас не читает переписку
               </div>
 
-              {MESSAGES.map((msg) => (
+              {messages.map((msg) => (
                 <div key={msg.id} className={`msg-row ${msg.from === "me" ? "msg-row-me" : ""}`}>
                   {msg.from === "them" && (
                     <div className="msg-avatar-sm" style={{ background: selectedChat.color + "22" }}>
@@ -306,26 +389,44 @@ export default function Index() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             <div className="chat-input-area">
               <button className="icon-btn"><Icon name="Paperclip" size={20} /></button>
               <div className="input-wrap">
-                <input
-                  className="msg-input"
-                  placeholder="Сообщение..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && setMessage("")}
-                />
-                <button className="emoji-btn"><Icon name="Smile" size={18} /></button>
+                {recording ? (
+                  <div className="recording-indicator">
+                    <span className="rec-dot" />
+                    <span className="rec-text">Запись голосового...</span>
+                    <span className="rec-time">{formatRecTime(recordSeconds)}</span>
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      className="msg-input"
+                      placeholder="Сообщение..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                    />
+                    <button className="emoji-btn"><Icon name="Smile" size={18} /></button>
+                  </>
+                )}
               </div>
-              <button
-                className={`send-btn ${recording ? "send-btn-recording" : ""}`}
-                onClick={() => message ? setMessage("") : setRecording(!recording)}
-              >
-                <Icon name={message ? "Send" : recording ? "Square" : "Mic"} size={18} />
-              </button>
+              {message && !recording ? (
+                <button className="send-btn" onClick={sendMessage}>
+                  <Icon name="Send" size={18} />
+                </button>
+              ) : (
+                <button
+                  className={`send-btn ${recording ? "send-btn-recording" : ""}`}
+                  onClick={recording ? stopRecording : startRecording}
+                  title={recording ? "Остановить и отправить" : "Записать голосовое"}
+                >
+                  <Icon name={recording ? "Send" : "Mic"} size={18} />
+                </button>
+              )}
             </div>
           </>
         ) : (

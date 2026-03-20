@@ -2,55 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 270 70% 60%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 270 70% 60%;
-    --radius: 0.75rem;
+/* =================== THEME VARIABLES =================== */
+:root,
+[data-theme="dark"] {
+  --nova-bg: #0a0b14;
+  --nova-sidebar: #0f1020;
+  --nova-panel: #111226;
+  --nova-surface: #181a30;
+  --nova-surface2: #1e2038;
+  --nova-border: rgba(255, 255, 255, 0.07);
+  --nova-text: #e2e8f0;
+  --nova-text-secondary: #94a3b8;
+  --nova-muted: #64748b;
+  --nova-purple: #a855f7;
+  --nova-pink: #ec4899;
+  --nova-cyan: #06b6d4;
+  --nova-grad: linear-gradient(135deg, #a855f7, #ec4899, #06b6d4);
+  --nova-bubble-me: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.35),
+    rgba(236, 72, 153, 0.25)
+  );
+  --nova-bubble-me-border: rgba(168, 85, 247, 0.3);
+  --nova-bubble-them: #111226;
+  --nova-bubble-them-border: rgba(255, 255, 255, 0.07);
+  --nova-input-bg: #181a30;
+  --nova-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --nova-mesh1: rgba(168, 85, 247, 0.08);
+  --nova-mesh2: rgba(6, 182, 212, 0.06);
+  --nova-mesh3: rgba(236, 72, 153, 0.06);
+  --nova-header-bg: rgba(15, 16, 32, 0.85);
+  --nova-vcall-bg: rgba(8, 9, 18, 0.97);
 
-    --nova-bg: #0a0b14;
-    --nova-sidebar: #0f1020;
-    --nova-panel: #111226;
-    --nova-surface: #181a30;
-    --nova-border: rgba(255, 255, 255, 0.07);
-    --nova-purple: #a855f7;
-    --nova-pink: #ec4899;
-    --nova-cyan: #06b6d4;
-    --nova-text: #e2e8f0;
-    --nova-muted: #64748b;
-    --nova-grad: linear-gradient(135deg, #a855f7, #ec4899, #06b6d4);
-  }
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --ring: 270 70% 60%;
+  --radius: 0.75rem;
+}
+
+[data-theme="light"] {
+  --nova-bg: #f0f2f8;
+  --nova-sidebar: #ffffff;
+  --nova-panel: #f8f9fe;
+  --nova-surface: #eef0f8;
+  --nova-surface2: #e4e6f5;
+  --nova-border: rgba(100, 80, 200, 0.12);
+  --nova-text: #1a1b2e;
+  --nova-text-secondary: #4a4b6a;
+  --nova-muted: #8a8cb0;
+  --nova-purple: #7c3aed;
+  --nova-pink: #db2777;
+  --nova-cyan: #0891b2;
+  --nova-grad: linear-gradient(135deg, #7c3aed, #db2777, #0891b2);
+  --nova-bubble-me: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.15),
+    rgba(219, 39, 119, 0.1)
+  );
+  --nova-bubble-me-border: rgba(124, 58, 237, 0.22);
+  --nova-bubble-them: #ffffff;
+  --nova-bubble-them-border: rgba(100, 80, 200, 0.12);
+  --nova-input-bg: #ffffff;
+  --nova-shadow: 0 4px 20px rgba(100, 80, 200, 0.1);
+  --nova-mesh1: rgba(124, 58, 237, 0.05);
+  --nova-mesh2: rgba(8, 145, 178, 0.04);
+  --nova-mesh3: rgba(219, 39, 119, 0.04);
+  --nova-header-bg: rgba(255, 255, 255, 0.9);
+  --nova-vcall-bg: rgba(240, 242, 248, 0.97);
+
+  --background: 230 50% 97%;
+  --foreground: 230 30% 10%;
+  --border: 230 30% 88%;
+  --ring: 270 60% 50%;
+  --radius: 0.75rem;
 }
 
 @layer base {
   * {
-    @apply border-border;
     box-sizing: border-box;
+    border-color: var(--nova-border);
+  }
+  html {
+    transition:
+      background 0.3s,
+      color 0.3s;
   }
   body {
-    @apply bg-background text-foreground;
     font-family: "Golos Text", "Rubik", sans-serif;
     background: var(--nova-bg);
     color: var(--nova-text);
     overflow: hidden;
     height: 100vh;
+    margin: 0;
+    transition:
+      background 0.3s,
+      color 0.3s;
   }
   #root {
     height: 100vh;
@@ -64,9 +111,9 @@
   background: var(--nova-bg);
   position: relative;
   overflow: hidden;
+  transition: background 0.3s;
 }
 
-/* Background mesh */
 .messenger-root::before {
   content: "";
   position: fixed;
@@ -74,21 +121,22 @@
   background:
     radial-gradient(
       ellipse 60% 50% at 20% 50%,
-      rgba(168, 85, 247, 0.08) 0%,
+      var(--nova-mesh1) 0%,
       transparent 60%
     ),
     radial-gradient(
       ellipse 50% 60% at 80% 20%,
-      rgba(6, 182, 212, 0.06) 0%,
+      var(--nova-mesh2) 0%,
       transparent 60%
     ),
     radial-gradient(
       ellipse 40% 40% at 60% 80%,
-      rgba(236, 72, 153, 0.06) 0%,
+      var(--nova-mesh3) 0%,
       transparent 60%
     );
   pointer-events: none;
   z-index: 0;
+  transition: background 0.3s;
 }
 
 /* =================== SIDEBAR =================== */
@@ -102,13 +150,17 @@
   height: 100vh;
   position: relative;
   z-index: 1;
+  box-shadow: var(--nova-shadow);
+  transition:
+    background 0.3s,
+    border-color 0.3s;
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 18px 14px;
+  padding: 18px 16px 14px;
   border-bottom: 1px solid var(--nova-border);
 }
 
@@ -127,7 +179,7 @@
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.35);
 }
 
 .logo-text {
@@ -139,6 +191,57 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* =================== THEME TOGGLE =================== */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle-track {
+  display: flex;
+  align-items: center;
+  width: 48px;
+  height: 26px;
+  background: var(--nova-surface2);
+  border-radius: 20px;
+  border: 1px solid var(--nova-border);
+  padding: 2px;
+  transition: background 0.3s;
+}
+
+.theme-toggle-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--nova-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .theme-toggle-thumb {
+  transform: translateX(22px);
+}
+
+.theme-toggle-mini {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--nova-surface);
+  border: 1px solid var(--nova-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 
 /* =================== SEARCH =================== */
@@ -165,13 +268,14 @@
   font-size: 13px;
   font-family: "Golos Text", sans-serif;
   outline: none;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.3s;
 }
 
 .search-input:focus {
-  border-color: rgba(168, 85, 247, 0.5);
+  border-color: var(--nova-purple);
 }
-
 .search-input::placeholder {
   color: var(--nova-muted);
 }
@@ -206,13 +310,9 @@
 }
 
 .tab-btn-active {
-  color: white;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.3),
-    rgba(236, 72, 153, 0.2)
-  );
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: var(--nova-purple);
+  background: var(--nova-surface);
+  border: 1px solid var(--nova-border);
 }
 
 /* =================== CHAT LIST =================== */
@@ -221,17 +321,17 @@
   overflow-y: auto;
   padding: 4px 8px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: var(--nova-border) transparent;
 }
 
 .chat-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 10px;
+  padding: 10px;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.18s;
+  transition: background 0.18s;
   margin-bottom: 2px;
 }
 
@@ -240,12 +340,8 @@
 }
 
 .chat-item-active {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.15),
-    rgba(236, 72, 153, 0.1)
-  );
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background: var(--nova-surface) !important;
+  border: 1px solid var(--nova-bubble-me-border);
 }
 
 .chat-avatar {
@@ -324,6 +420,7 @@
   border-radius: 20px;
   min-width: 20px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .subs-badge {
@@ -359,12 +456,8 @@
   align-items: center;
   gap: 14px;
   padding: 16px 12px;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.15),
-    rgba(6, 182, 212, 0.1)
-  );
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background: var(--nova-surface);
+  border: 1px solid var(--nova-border);
   border-radius: 14px;
   margin-bottom: 12px;
 }
@@ -449,9 +542,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: rgba(15, 16, 32, 0.8);
+  background: var(--nova-header-bg);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--nova-border);
+  transition: background 0.3s;
 }
 
 .chat-header-info {
@@ -529,7 +623,7 @@
   flex-direction: column;
   gap: 10px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  scrollbar-color: var(--nova-border) transparent;
 }
 
 .encrypt-notice {
@@ -549,7 +643,6 @@
   align-items: flex-end;
   gap: 8px;
 }
-
 .msg-row-me {
   flex-direction: row-reverse;
 }
@@ -568,22 +661,29 @@
   max-width: 65%;
   padding: 10px 14px;
   border-radius: 16px;
-  position: relative;
+  animation: msgIn 0.22s ease;
+}
+
+@keyframes msgIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .msg-bubble-them {
-  background: var(--nova-panel);
-  border: 1px solid var(--nova-border);
+  background: var(--nova-bubble-them);
+  border: 1px solid var(--nova-bubble-them-border);
   border-bottom-left-radius: 4px;
 }
 
 .msg-bubble-me {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.35),
-    rgba(236, 72, 153, 0.25)
-  );
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: var(--nova-bubble-me);
+  border: 1px solid var(--nova-bubble-me-border);
   border-bottom-right-radius: 4px;
 }
 
@@ -591,6 +691,7 @@
   font-size: 13.5px;
   color: var(--nova-text);
   line-height: 1.5;
+  margin: 0;
 }
 
 .msg-meta {
@@ -628,7 +729,6 @@
   flex-shrink: 0;
   transition: opacity 0.15s;
 }
-
 .play-btn:hover {
   opacity: 0.85;
 }
@@ -642,13 +742,10 @@
 
 .wave-bar {
   width: 3px;
-  background: linear-gradient(
-    to top,
-    rgba(168, 85, 247, 0.5),
-    rgba(236, 72, 153, 0.8)
-  );
+  background: linear-gradient(to top, var(--nova-purple), var(--nova-pink));
   border-radius: 2px;
   min-height: 4px;
+  opacity: 0.7;
 }
 
 .voice-dur {
@@ -660,11 +757,11 @@
 .voice-speed {
   font-size: 10px;
   color: var(--nova-purple);
-  background: rgba(168, 85, 247, 0.15);
+  background: var(--nova-surface);
   padding: 1px 5px;
   border-radius: 6px;
   cursor: pointer;
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  border: 1px solid var(--nova-border);
 }
 
 /* =================== VIDEO MSG =================== */
@@ -679,15 +776,15 @@
   height: 52px;
   background: linear-gradient(
     135deg,
-    rgba(6, 182, 212, 0.3),
-    rgba(168, 85, 247, 0.3)
+    rgba(6, 182, 212, 0.2),
+    rgba(168, 85, 247, 0.15)
   );
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: var(--nova-cyan);
+  border: 1px solid rgba(6, 182, 212, 0.2);
   cursor: pointer;
 }
 
@@ -695,6 +792,52 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--nova-text);
+  margin: 0;
+}
+
+/* =================== RECORDING =================== */
+.recording-indicator {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  background: var(--nova-input-bg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 14px;
+}
+
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+  animation: pulse-rec-dot 1s infinite;
+}
+
+@keyframes pulse-rec-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.75);
+  }
+}
+
+.rec-text {
+  font-size: 13px;
+  color: #ef4444;
+  flex: 1;
+}
+.rec-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ef4444;
+  font-variant-numeric: tabular-nums;
 }
 
 /* =================== INPUT AREA =================== */
@@ -703,9 +846,10 @@
   align-items: center;
   gap: 8px;
   padding: 14px 18px;
-  background: rgba(15, 16, 32, 0.8);
+  background: var(--nova-header-bg);
   backdrop-filter: blur(20px);
   border-top: 1px solid var(--nova-border);
+  transition: background 0.3s;
 }
 
 .input-wrap {
@@ -717,7 +861,7 @@
 
 .msg-input {
   width: 100%;
-  background: var(--nova-surface);
+  background: var(--nova-input-bg);
   border: 1px solid var(--nova-border);
   border-radius: 14px;
   padding: 11px 44px 11px 16px;
@@ -725,12 +869,14 @@
   font-size: 13.5px;
   font-family: "Golos Text", sans-serif;
   outline: none;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.3s;
 }
 
 .msg-input:focus {
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.06);
+  border-color: var(--nova-purple);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.07);
 }
 
 .msg-input::placeholder {
@@ -764,27 +910,28 @@
   cursor: pointer;
   color: white;
   transition: all 0.18s;
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+  flex-shrink: 0;
 }
 
 .send-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 22px rgba(168, 85, 247, 0.5);
+  transform: scale(1.06);
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.45);
 }
 
 .send-btn-recording {
-  background: linear-gradient(135deg, #ef4444, #f97316);
-  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
-  animation: pulse-rec 1s infinite;
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4) !important;
+  animation: pulse-send 1.2s infinite;
 }
 
-@keyframes pulse-rec {
+@keyframes pulse-send {
   0%,
   100% {
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
   }
   50% {
-    box-shadow: 0 4px 28px rgba(239, 68, 68, 0.7);
+    box-shadow: 0 4px 28px rgba(34, 197, 94, 0.65);
   }
 }
 
@@ -801,7 +948,7 @@
 
 .empty-icon {
   font-size: 56px;
-  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.5));
+  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4));
 }
 
 .empty-title {
@@ -833,7 +980,7 @@
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: var(--nova-muted);
+  color: var(--nova-text-secondary);
   background: var(--nova-panel);
   border: 1px solid var(--nova-border);
   padding: 10px 18px;
@@ -866,15 +1013,15 @@
   background:
     radial-gradient(
       ellipse at 30% 40%,
-      rgba(168, 85, 247, 0.4),
+      rgba(168, 85, 247, 0.3),
       transparent 60%
     ),
     radial-gradient(
       ellipse at 70% 60%,
-      rgba(6, 182, 212, 0.3),
+      rgba(6, 182, 212, 0.2),
       transparent 60%
     ),
-    rgba(8, 9, 18, 0.97);
+    var(--nova-vcall-bg);
   backdrop-filter: blur(40px);
 }
 
@@ -892,24 +1039,24 @@
   height: 120px;
   background: linear-gradient(
     135deg,
-    rgba(168, 85, 247, 0.3),
-    rgba(6, 182, 212, 0.2)
+    rgba(168, 85, 247, 0.2),
+    rgba(6, 182, 212, 0.15)
   );
-  border: 2px solid rgba(168, 85, 247, 0.5);
+  border: 2px solid rgba(168, 85, 247, 0.4);
   border-radius: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 52px;
   font-weight: 700;
-  box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.2);
 }
 
 .videocall-name {
   font-family: "Rubik", sans-serif;
   font-size: 22px;
   font-weight: 600;
-  color: white;
+  color: var(--nova-text);
 }
 
 .videocall-status {
@@ -939,15 +1086,15 @@
   height: 110px;
   background: linear-gradient(
     135deg,
-    rgba(6, 182, 212, 0.3),
-    rgba(168, 85, 247, 0.2)
+    rgba(6, 182, 212, 0.2),
+    rgba(168, 85, 247, 0.15)
   );
-  border: 2px solid rgba(6, 182, 212, 0.4);
+  border: 2px solid rgba(6, 182, 212, 0.3);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--nova-cyan);
 }
 
 .videocall-controls {
@@ -969,24 +1116,20 @@
   color: white;
 }
 
-.vcbtn-mute {
-  background: rgba(255, 255, 255, 0.15);
-}
-.vcbtn-cam {
-  background: rgba(255, 255, 255, 0.15);
-}
+.vcbtn-mute,
+.vcbtn-cam,
 .vcbtn-screen {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(128, 128, 160, 0.25);
 }
 .vcbtn-end {
   background: linear-gradient(135deg, #ef4444, #dc2626);
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
 }
 .vcbtn:hover {
   transform: scale(1.1);
 }
 .vcbtn-end:hover {
-  box-shadow: 0 6px 28px rgba(239, 68, 68, 0.7);
+  box-shadow: 0 6px 28px rgba(239, 68, 68, 0.6);
 }
 
 /* Scrollbar */
@@ -997,6 +1140,6 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--nova-border);
   border-radius: 4px;
 }
